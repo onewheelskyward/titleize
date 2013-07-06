@@ -82,11 +82,7 @@ class String
   #   "notes on a scandal" # => "Notes on a Scandal"
   #   "the good german"    # => "The Good German"
   def titleize(opts={})
-    if defined? ActiveSupport
-      ActiveSupport::Inflector.titleize(self, opts)
-    else
       Titleize.titleize(self)
-    end
   end
   alias_method :titlecase, :titleize
 
@@ -94,34 +90,4 @@ class String
     replace(titleize)
   end
   alias_method :titlecase!, :titleize!
-end
-
-if defined? ActiveSupport
-  module ActiveSupport::Inflector
-    extend self
-
-    # Capitalizes most words to create a nicer looking title string.
-    #
-    # The list of "small words" which are not capped comes from
-    # the New York Times Manual of Style, plus 'vs' and 'v'.
-    #
-    # This replaces the default Rails titleize. Like the default, it uses
-    # Inflector.underscore and Inflector.humanize to convert
-    # underscored_names and CamelCaseNames to a more human form. However, you can change
-    # this behavior by passing :humanize => false or :underscore => false as options. 
-    # This can be useful when dealing with words like "iPod" and "GPS".
-    #
-    # titleize is also aliased as titlecase.
-    #
-    #   "notes on an active_record" # => "Notes on an Active Record"
-    #   "the GoodGerman"            # => "The Good German"
-    def titleize(title, opts={})
-      opts = {:humanize => true, :underscore => true}.merge(opts)
-      title = ActiveSupport::Inflector.underscore(title) if opts[:underscore]
-      title = ActiveSupport::Inflector.humanize(title) if opts[:humanize]
-
-      Titleize.titleize(title)
-    end
-    alias_method :titlecase, :titleize
-  end
 end
