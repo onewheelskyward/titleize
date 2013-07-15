@@ -81,12 +81,12 @@ class String
   #
   #   "notes on a scandal" # => "Notes on a Scandal"
   #   "the good german"    # => "The Good German"
-  def titleize(opts={})
+  def titlecaseit(opts={})
       Titleize.titleize(self)
   end
   alias_method :titlecase, :titleize
 
-  def titleize!
+  def titlecaseit!
     replace(titleize)
   end
   alias_method :titlecase!, :titleize!
