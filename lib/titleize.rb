@@ -84,10 +84,8 @@ class String
   def titlecaseit(opts={})
       Titleize.titleize(self)
   end
-  alias_method :titlecase, :titleize
 
   def titlecaseit!
     replace(titleize)
   end
-  alias_method :titlecase!, :titleize!
 end
