@@ -18,6 +18,9 @@ module Titleize
   #   "notes on a scandal" # => "Notes on a Scandal"
   #   "the good german"    # => "The Good German"
   def titleize(title)
+    if title == ""
+      return title
+    end
     title = title.dup
     title.downcase! unless title[/[[:lower:]]/]  # assume all-caps need fixing
 
