@@ -21,7 +21,7 @@ module Titleize
     title = title.dup
     title.downcase! unless title[/[[:lower:]]/]  # assume all-caps need fixing
 
-    phrases(title).map do |phrase|
+    xyz = phrases(title).map do |phrase|
       words = phrase.split
       words.map do |word|
         def word.capitalize
@@ -40,8 +40,6 @@ module Titleize
           word
         when /^[[:digit:]]/  # first character is a number
           word
-        when words.first, words.last
-          word.capitalize
         when *(SMALL_WORDS + SMALL_WORDS.map {|small| small.capitalize })
           word.downcase
         else
@@ -49,6 +47,8 @@ module Titleize
         end
       end.join(" ")
     end.join(" ")
+    xyz[0] = xyz[0].capitalize
+    xyz
   end
 
   # Splits a title into an array based on punctuation.
@@ -82,10 +82,18 @@ class String
   #   "notes on a scandal" # => "Notes on a Scandal"
   #   "the good german"    # => "The Good German"
   def titlecaseit(opts={})
-      Titleize.titleize(self)
+    Titleize.titleize(self)
   end
 
   def titlecaseit!
+    replace(titleize)
+  end
+
+  def titleize(opts={})
+    Titleize.titleize(self)
+  end
+
+  def titleize!
     replace(titleize)
   end
 end

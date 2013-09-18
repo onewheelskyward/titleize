@@ -62,6 +62,10 @@ describe Titleize do
       titleize("this").should be_an_instance_of(String)
     end
 
+    it 'should not cap the in the middle' do
+      titleize('the quick brown fox jumped over the lazy dog').should == 'The Quick Brown Fox Jumped Over the Lazy Dog'
+    end
+
     it "should capitalize the first letter of regular words" do
       titleize("cat beats monkey").should == "Cat Beats Monkey"
     end
@@ -232,62 +236,26 @@ describe ActiveSupport::Inflector do
     before(:each) do
       @title = "active_record and ActiveResource"
     end
-
-    it "should call humanize and underscore like the default in Rails" do
-      underscored_title = "active_record and active_resource"
-      humanized_title = "Active record and active resource"
-      ActiveSupport::Inflector.should_receive(:underscore).with(@title).and_return(underscored_title)
-      ActiveSupport::Inflector.should_receive(:humanize).with(underscored_title).and_return(humanized_title)
-      titleize(@title).should == "Active Record and Active Resource"
-    end
-
-    it "should allow disabling of Inflector#underscore" do
-      humanized_title = "Active record and activeresource"
-      ActiveSupport::Inflector.should_not_receive(:underscore)
-      ActiveSupport::Inflector.should_receive(:humanize).with(@title).and_return(humanized_title)
-      titleize(@title, :underscore => false).should == "Active Record and Activeresource"
-    end
-
-    it "should allow disabling of Inflector#humanize" do
-      underscored_title = "active_record and active_resource"
-      ActiveSupport::Inflector.should_not_receive(:humanize)
-      ActiveSupport::Inflector.should_receive(:underscore).with(@title).and_return(underscored_title)
-      titleize(@title, :humanize => false).should == "Active_record and Active_resource"
-    end
-
-    it "should replace Inflector.titleize" do
-      Titleize.should_receive(:titleize).with(@title)
-      ActiveSupport::Inflector.stub!(:underscore).and_return(@title)
-      ActiveSupport::Inflector.stub!(:humanize).and_return(@title)
-      ActiveSupport::Inflector.titleize(@title)
-    end
-
-    it "should be aliased as titlecase" do
-      ActiveSupport::Inflector.singleton_methods.map(&:to_sym).should include(:titlecase)
-      ActiveSupport::Inflector.stub!(:titlecase).and_return("title")
-      ActiveSupport::Inflector.stub!(:titleize).and_return("title")
-      ActiveSupport::Inflector.titlecase("this").should == ActiveSupport::Inflector.titleize("this")
-    end
   end
-end
+  end
 
 describe String do
   it "should have a titleize method" do
-    String.instance_methods.map(&:to_sym).should include(:titleize)
+    String.instance_methods.map(&:to_sym).should include(:titlecaseit)
   end
 
   it "should have a titleize! method" do
-    String.instance_methods.map(&:to_sym).should include(:titleize!)
+    String.instance_methods.map(&:to_sym).should include(:titlecaseit!)
   end
 
   it "should work" do
-    "this is a test".titleize.should == "This Is a Test"
+    "this is a test".titlecaseit.should == "This Is a Test"
   end
 
   it "should be aliased as #titlecase" do
-    String.instance_methods.map(&:to_sym).should include(:titlecase)
+    String.instance_methods.map(&:to_sym).should include(:titlecaseit)
     title = "this is a pile of testing text"
-    title.titlecase.should == title.titleize
+    title.titlecaseit.should == title.titleize
   end
 
   context 'when using the self modified version of titleize' do
@@ -297,27 +265,10 @@ describe String do
       test_str.should == 'This Is a Test'
     end
 
-    it 'should be aliased as #titlecase!' do
+    it 'should be aliased as #titlecaseit!' do
       test_str = 'this is a test'
-      test_str.titlecase!
+      test_str.titlecaseit!
       test_str.should == 'This Is a Test'
-    end
-  end
-
-  context "when ActiveSupport is loaded" do
-    it "should act the same as Inflector#titleize" do
-      ActiveSupport::Inflector.should_receive(:titleize).with("title", {})
-      "title".titleize
-    end
-
-    it "should allow disabling of Inflector#underscore" do
-      ActiveSupport::Inflector.should_not_receive(:underscore)
-      "title".titleize(:underscore => false)
-    end
-
-    it "should allow disabling of Inflector#humanize" do
-      ActiveSupport::Inflector.should_not_receive(:humanize)
-      "title".titleize(:humanize => false)
     end
   end
 
