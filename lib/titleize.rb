@@ -47,7 +47,9 @@ module Titleize
         end
       end.join(" ")
     end.join(" ")
-    xyz[0] = xyz[0].capitalize
+    if xyz
+      xyz[0] = xyz[0].capitalize
+    end
     xyz
   end
 
